@@ -66,11 +66,13 @@ class JsonSchemaGenerator {
                 var props = new DynamicAccess();
                 var required = [];
 
-                // sort by declaration position
-                anon.fields.sort(function(a, b) return a.pos.getInfos().min - b.pos.getInfos().min);
+                var fields = anon.fields.filter(function(f) return !f.meta.has(':schemaIgnore'));
 
-                for (i in 0...anon.fields.length) {
-                    var f = anon.fields[i];
+                // sort by declaration position
+                fields.sort(function(a, b) return a.pos.getInfos().min - b.pos.getInfos().min);
+
+                for (i in 0...fields.length) {
+                    var f = fields[i];
                     var schema = genSchema(f.type, f.pos, null, refs);
                     schema.propertyOrder = i;
                     if (f.doc != null)

@@ -57,6 +57,8 @@ class JsonSchemaGenerator {
                         return {type: "number"};
                     case [{pack: [], name: "Bool"}, []]:
                         return {type: "boolean"};
+                    case [{type: t}, []]:
+                        return genSchema(t, pos, null, refs);
                     default:
                 }
 

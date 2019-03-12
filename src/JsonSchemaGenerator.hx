@@ -1,3 +1,4 @@
+import haxe.macro.ComplexTypeTools;
 #if macro
 import haxe.DynamicAccess;
 import haxe.macro.Context;
@@ -23,6 +24,7 @@ class JsonSchemaGenerator {
 
     #if macro
     static function genSchema(type:Type, pos:Position, structInfo:Null<StructInfo>, refs:DynamicAccess<JsonSchema>):JsonSchema {
+        
         switch (type) {
             case TType(_.get() => dt, params):
                 return switch [dt, params] {
@@ -57,11 +59,12 @@ class JsonSchemaGenerator {
                         return {type: "number"};
                     case [{pack: [], name: "Bool"}, []]:
                         return {type: "boolean"};
+                    case [{pack: [], name: "Null"}, [t]]:
+                        return genSchema(t, pos, null, refs);
                     case [{type: t}, []]:
                         return genSchema(t, pos, null, refs);
                     default:
                 }
-
             case TAnonymous(_.get() => anon):
                 var props = new DynamicAccess();
                 var required = [];
